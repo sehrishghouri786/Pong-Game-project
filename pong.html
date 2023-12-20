@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Pong Game</title>
+    <style>
+        body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.game-container {
+    position: relative;
+    width: 600px;
+    height: 400px;
+    background-color: #111;
+    border: 2px solid #fff;
+    display: flex;
+}
+
+.paddle {
+    position: absolute;
+    width: 10px;
+    height: 60px;
+    background-color: #fff;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#leftPaddle {
+    left: 0;
+}
+
+#rightPaddle {
+    right: 0;
+}
+
+.ball {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #fff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="ball" id="ball"></div>
+        <div class="paddle" id="leftPaddle"></div>
+        <div class="paddle" id="rightPaddle"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const ball = document.getElementById("ball");
+    const leftPaddle = document.getElementById("leftPaddle");
+    const rightPaddle = document.getElementById("rightPaddle");
+
+    let ballX = 300;
+    let ballY = 200;
+    let ballSpeedX = 5;
+    let ballSpeedY = 5;
+
+    let leftPaddleY = 150;
+    let rightPaddleY = 150;
+    const paddleSpeed = 10;
+
+    function update() {
+        // Update ball position
+        ballX += ballSpeedX;
+        ballY += ballSpeedY;
+
+        // Ball collision with walls
+        if (ballY < 0 || ballY > 380) {
+            ballSpeedY = -ballSpeedY;
+        }
+
+        // Ball collision with paddles
+        if (
+            (ballX < 20 && ballY > leftPaddleY && ballY < leftPaddleY + 60) ||
+            (ballX > 570 && ballY > rightPaddleY && ballY < rightPaddleY + 60)
+        ) {
+            ballSpeedX = -ballSpeedX;
+        }
+
+        // Update paddles
+        if (leftPaddleY < 0) {
+            leftPaddleY = 0;
+        }
+        if (leftPaddleY > 340) {
+            leftPaddleY = 340;
+        }
+
+        if (rightPaddleY < 0) {
+            rightPaddleY = 0;
+        }
+        if (rightPaddleY > 340) {
+            rightPaddleY = 340;
+        }
+
+        // Update ball position
+        ball.style.left = ballX + "px";
+        ball.style.top = ballY + "px";
+
+        // Update paddles position
+        leftPaddle.style.top = leftPaddleY + "px";
+        rightPaddle.style.top = rightPaddleY + "px";
+    }
+
+    function gameLoop() {
+        update();
+        requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "ArrowUp") {
+            rightPaddleY -= paddleSpeed;
+        }
+        if (event.key === "ArrowDown") {
+            rightPaddleY += paddleSpeed;
+        }
+
+        if (event.key === "w") {
+            leftPaddleY -= paddleSpeed;
+        }
+        if (event.key === "s") {
+            leftPaddleY += paddleSpeed;
+        }
+    });
+
+    gameLoop();
+});
+</script>
+</html>
